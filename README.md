@@ -22,3 +22,16 @@ IRC greeting bot created in Node.js
     cd src
     node main.js
     ```
+
+## Settings Configuration
+The settings file has the following required parameters:
+
+| name       | meaning                                                     | example             |
+| ---------- | ----------------------------------------------------------- | ------------------- |
+| network    | the URL of the IRC network for the bot                      | irc.yournetwork.com |
+| username   | the nickname for the bot                                    | myNick              |
+| parameters | array containing `channels` and `password`                  | [see example]       |
+| channels   | array of channels for the bot to autojoin on startup        | [#channel]          |
+| password   | the password associated with the `username` for the bot     | myPass              |
+| prefix     | prefix for all PM commands                                  | !                   |
+| cooldown   | the minimum number of hours between duplicate introductions | 6                   |

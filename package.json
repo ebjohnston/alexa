@@ -1,0 +1,29 @@
+{
+    "name": "greeting-bot",
+    "version": "1.0.0",
+    "description": "IRC bot in Node.js",
+    "main": "core.js",
+    "readme": "README.md",
+    "dependencies": {
+        "irc": "^0.5.2"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ebjohnston/greeting-bot.git"
+    },
+    "keywords": [
+        "IRC",
+        "bot",
+        "greeting"
+    ],
+    "author": "Ethan Johnston",
+    "license": "\tISC",
+    "bugs": {
+        "url": "https://github.com/ebjohnston/greeting-bot/issues"
+    },
+    "homepage": "https://github.com/ebjohnston/greeting-bot#readme"
+}

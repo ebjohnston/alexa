@@ -42,8 +42,9 @@ function describe(nick) {
     if (profiles[nick]["image"]) {
         output += " ( " + profiles[nick].image;
         if (profiles[nick]["link"]) {
-            output += " | " + profiles[nick].link + " )";
+            output += " | " + profiles[nick].link;
         }
+        output += " )";
     }
     else if (profiles[nick]["link"]) {
         output += " ( " + profiles[nick].link + " )";

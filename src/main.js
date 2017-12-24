@@ -9,10 +9,21 @@ var settings = require("./settings.json");
 var profiles = require("./profiles.json");
 
 var client = new irc.Client(settings.network, settings.username, settings.parameters);
+var duplicates = [];
+
+client.addListener("registered", () => {
+    setInterval( () => {
+        duplicates = [];
+        console.log("resetting duplicates...");
+    }, settings.cooldown * 1000 * 60 * 60);
+});
 
 client.addListener("join", (channel, nick, message) => {
     if (profiles[nick]) {
-        greetings.introduce(client, channel, nick);
+        if (!duplicates.includes(nick)) {
+            greetings.introduce(client, channel, nick);
+            duplicates.push(nick);
+        }
     }
     else {
         greetings.notify(client, nick);
@@ -37,6 +48,26 @@ client.addListener("pm", (nick, text, message) => {
         }
         else {
             client.say(nick, "I don't recognize this command. Type " + settings.prefix + "help for more information.");
+        }
+    }
+});
+
+client.addListener("message#", (nick, channel, text, message) => {
+    if ((text.startsWith(settings.username + ", who is ") || text.startsWith(settings.username + ", what is "))
+        && text.charAt(text.length-1) === "?") {
+
+        if (text.startsWith(settings.username + ", who is ")) {
+            var query = text.substring(settings.username.length + 9, text.length-1);
+        }
+        else {
+            var query = text.substring(settings.username.length + 10, text.length-1);
+        }
+
+        if (profiles[query]) {
+            greetings.introduce(client, channel, query);
+        }
+        else {
+            client.say(channel, "Sorry, I don't recognize the name " + query + ".");
         }
     }
 });

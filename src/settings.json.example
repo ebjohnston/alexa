@@ -1,0 +1,10 @@
+{
+    "network": "irc.yournetwork.com",
+    "username": "myNick",
+    "parameters": {
+        "channels": ["#channel"],
+        "password": "myPass"
+    },
+    "prefix": "!",
+    "cooldown": 6
+}

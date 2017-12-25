@@ -24,15 +24,18 @@ var commands = {
             }
             else if (suffix === "on") {
                 profiles[nick]["counter"]["enable"] = true;
+                writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been enabled.");
             }
             else if (suffix === "off") {
                 profiles[nick]["counter"]["enable"] = false;
                 profiles[nick]["counter"]["count"] = 0;
+                writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been disabled and reset.");
             }
             else if (suffix === "reset") {
                 profiles[nick]["counter"]["count"] = 0;
+                writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been reset to zero.");
             }
             else if (suffix === "show") {
@@ -61,6 +64,7 @@ var commands = {
 
                 if (!profiles[nick]["description"] && !profiles[nick]["image"] && !profiles[nick]["link"]) {
                     delete profiles[nick];
+                    writeProfiles();
                     client.say(nick, "No remaining profile attributes. Your profile has been cleared and reset.");
                 }
             }

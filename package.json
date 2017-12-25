@@ -1,8 +1,8 @@
 {
-    "name": "greeting-bot",
-    "version": "1.0.0",
+    "name": "alexa",
+    "version": "0.1.0",
     "description": "IRC bot in Node.js",
-    "main": "core.js",
+    "main": "main.js",
     "readme": "README.md",
     "dependencies": {
         "irc": "^0.5.2"
@@ -13,17 +13,17 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ebjohnston/greeting-bot.git"
+        "url": "git+https://github.com/XavierRaine/alexa.git"
     },
     "keywords": [
         "IRC",
         "bot",
         "greeting"
     ],
-    "author": "Ethan Johnston",
+    "author": "Xavier",
     "license": "\tISC",
     "bugs": {
-        "url": "https://github.com/ebjohnston/greeting-bot/issues"
+        "url": "https://github.com/XavierRaine/alexa/issues"
     },
-    "homepage": "https://github.com/ebjohnston/greeting-bot#readme"
+    "homepage": "https://github.com/XavierRaine/alexa#readme"
 }

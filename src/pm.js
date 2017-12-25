@@ -161,13 +161,14 @@ var commands = {
             if (profiles[suffix]) {
                 client.say(nick, suffix + " is:" + greetings.describe(suffix));
 
-                if (profiles[suffix]["notify"]) {
-                    client.say(suffix, nick + " has just requested your information via " + settings.prefix + "who. " +
-                               "To disable these notifications, PM me: " + settings.prefix + "notify off.");
-                }
-
-                if (nick != suffix && profiles[suffix]["counter"]["enable"]) {
-                    profiles[suffix]["counter"]["count"] += 1;
+                if (nick != suffix) {
+                    if (profiles[suffix]["notify"]) {
+                        client.say(suffix, nick + " has just requested your information via " + settings.prefix + "who. " +
+                                   "To disable these notifications, PM me: " + settings.prefix + "notify off.");
+                    }
+                    if (profiles[suffix]["counter"]["enable"]) {
+                        profiles[suffix]["counter"]["count"] += 1;
+                    }
                 }
             }
             else {

@@ -137,7 +137,7 @@ var commands = {
                         }
                     }
 
-                    client.say(nick, "The list of available admin commands is:" + list);
+                    client.say(nick, "The list of available admin commands are: " + list);
                 }
             }
             else if (commands[suffix]) {
@@ -191,6 +191,15 @@ var commands = {
         "suffix": false,
         "process": (client, nick, suffix) => {
             client.say(nick, "pong");
+        }
+    },
+    "source": {
+        "name": "source",
+        "help": "usage: " + settings.prefix + "source -- links to the source code for the bot.",
+        "admin": false,
+        "suffix": false,
+        "process": (client, nick, suffix) => {
+            client.say(nick, "My source code can be found at: https://github.com/XavierRaine/alexa");
         }
     },
     "who": {

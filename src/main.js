@@ -18,18 +18,6 @@ client.addListener("registered", () => {
     }, settings.cooldown * 1000 * 60 * 60);
 });
 
-client.addListener("join", (channel, nick, message) => {
-    if (profiles[nick]) {
-        if (!duplicates.includes(nick)) {
-            greetings.introduce(client, channel, nick);
-            duplicates.push(nick);
-        }
-    }
-    else {
-        greetings.notify(client, nick);
-    }
-});
-
 client.addListener("pm", (nick, text, message) => {
     if (!text.startsWith(settings.prefix)) {
         client.say(nick, "I don't recognize this syntax. Type " + settings.prefix + "help for more information.");
@@ -76,6 +64,28 @@ client.addListener("message#", (nick, channel, text, message) => {
     }
 });
 
+client.addListener("join", (channel, nick, message) => {
+    processNick(channel, nick);
+});
+
+client.addListener("nick", (oldNick, newNick, channels, message) => {
+    for (channel in channels) {
+        processNick(channels[channel], newNick);
+    }
+});
+
 client.addListener("error", (message) => {
     console.log("error: ", message);
 });
+
+function processNick(channel, nick) {
+    if (profiles[nick]) {
+        if (!duplicates.includes(nick)) {
+            greetings.introduce(client, channel, nick);
+            duplicates.push(nick);
+        }
+    }
+    else {
+        greetings.notify(client, nick);
+    }
+}

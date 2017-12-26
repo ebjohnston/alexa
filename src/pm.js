@@ -153,6 +153,14 @@ var commands = {
             }
         }
     },
+    "ping": {
+        "name": "ping",
+        "help": "usage: " + settings.prefix + "ping -- returns pong, used to check if the bot is responsive.",
+        "suffix": false,
+        "process": (client, nick, suffix) => {
+            client.say(nick, "pong");
+        }
+    },
     "who": {
         "name": "who",
         "help": "usage: " + settings.prefix + "who [nick] -- displays information about a nickname if found in my database.",

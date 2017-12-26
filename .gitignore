@@ -7,3 +7,6 @@ profiles.json
 
 # debugging log
 npm-debug.log
+
+# logging files (server background output)
+logs/

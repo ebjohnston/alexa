@@ -35,3 +35,4 @@ The settings file has the following required parameters:
 | password   | the password associated with the `username` for the bot     | myPass              |
 | prefix     | prefix for all PM commands                                  | !                   |
 | cooldown   | the minimum number of hours between duplicate introductions | 6                   |
+| admins     | array of nicks that have permission to use admin commands   | [adminNick]         |

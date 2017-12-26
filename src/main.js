@@ -39,8 +39,12 @@ client.addListener("pm", (nick, text, message) => {
         var suffix = text.substring(settings.prefix.length + command.length + 1);
 
         if (pm.commands[command]) {
-            if (pm.commands[command].suffix && /^\s*$/.test(suffix)) { // suffix required, but not provided
-                client.say(nick, pm.commands[command].help);
+            if (pm.commands[command]["admin"] && !settings.admins.includes(nick)) {
+                client.say(nick, "You do not have permission to use that command.");
+            }
+            // check if suffix is required and not provided
+            else if (pm.commands[command]["suffix"] && /^\s*$/.test(suffix)) {
+                client.say(nick, pm.commands[command]["help"]);
             }
             else {
                 pm.commands[command].process(client, nick, suffix);

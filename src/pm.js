@@ -16,6 +16,7 @@ var commands = {
                 "on and off enable and disable this counter respectively (disabling also resets the count); " +
                 "show displays the current count; reset resets the current count to zero. " +
                 "By default, this counter is enabled.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             if (!profiles[nick]) {
@@ -50,6 +51,7 @@ var commands = {
         "name": "del",
         "help": "usage: " + settings.prefix + "del [description, image, link, all] -- " +
                 "removes one or all of your profile elements from my database.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             if (suffix === "all") {
@@ -77,15 +79,28 @@ var commands = {
         "name": "desc",
         "help": "usage: " + settings.prefix + "desc [text] -- sets a quick description for your nick (max 200 characters). " +
                 "Do not surround the description in quotes; do not start with a verb (e.g. 'a red fox' rather than 'is a red fox').",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             addProfileInfo(client, nick, suffix, "description", 200);
+        }
+    },
+    "echo": {
+        "name": "echo",
+        "help": "[admin] usage: " + settings.prefix + "echo [text] -- echos text as the bot into all channels",
+        "admin": true,
+        "suffix": true,
+        "process": (client, nick, suffix) => {
+            for(channel in settings.parameters.channels) {
+                client.say(settings.parameters.channels[channel], suffix);
+            }
         }
     },
     "img": {
         "name": "img",
         "help": "usage: " + settings.prefix + "img [url] -- sets a link to an image reference for your character (max 50 characters). " +
                 "Make sure you include the full URL starting with 'http' and link directly to the image.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             addProfileInfo(client, nick, suffix, "image", 50);
@@ -94,6 +109,7 @@ var commands = {
     "help": {
         "name": "help",
         "help": "... this is the command you are using right now",
+        "admin": false,
         "suffix": false,
         "process": (client, nick, suffix) => {
             if (/^\s*$/.test(suffix)) { // check if suffix is all whitespace or empty
@@ -105,11 +121,24 @@ var commands = {
 
                 var list = "";
                 for (command in commands) {
-                    list += commands[command]["name"] + " ";
+                    if (!commands[command]["admin"]) {
+                        list += commands[command]["name"] + " ";
+                    }
                 }
 
                 client.say(nick, "If you would like to know more about a particular command, just type " + settings.prefix +
                                  "help [command]. The list of available commands are: " + list);
+
+                if (settings.admins.includes(nick)) {
+                    list = "";
+                    for (command in commands) {
+                        if (commands[command]["admin"]) {
+                            list += commands[command]["name"] + " ";
+                        }
+                    }
+
+                    client.say(nick, "The list of available admin commands is:" + list);
+                }
             }
             else if (commands[suffix]) {
                 client.say(nick, commands[suffix]["help"]);
@@ -123,6 +152,7 @@ var commands = {
         "name": "link",
         "help": "usage: " + settings.prefix + "link [url] -- sets a link to an extended profile for your character (max 50 characters). " +
                 "Make sure you include the full URL starting with 'http' and link directly to the profile.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             addProfileInfo(client, nick, suffix, "link", 50);
@@ -132,6 +162,7 @@ var commands = {
         "name": "notify",
         "help": "usage: " + settings.prefix + "notify [on | off] -- toggle whether I PM you when someone queries your profile in my database. " +
                 "By default, this is turned off.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             if (!profiles[nick]) {
@@ -156,6 +187,7 @@ var commands = {
     "ping": {
         "name": "ping",
         "help": "usage: " + settings.prefix + "ping -- returns pong, used to check if the bot is responsive.",
+        "admin": false,
         "suffix": false,
         "process": (client, nick, suffix) => {
             client.say(nick, "pong");
@@ -164,6 +196,7 @@ var commands = {
     "who": {
         "name": "who",
         "help": "usage: " + settings.prefix + "who [nick] -- displays information about a nickname if found in my database.",
+        "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
             if (profiles[suffix]) {

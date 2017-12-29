@@ -45,15 +45,11 @@ client.addListener("pm", (nick, text, message) => {
 });
 
 client.addListener("message#", (nick, channel, text, message) => {
-    if ((text.startsWith(settings.username + ", who is ") || text.startsWith(settings.username + ", what is "))
-        && text.charAt(text.length-1) === "?") {
-
-        if (text.startsWith(settings.username + ", who is ")) {
-            var query = text.substring(settings.username.length + 9, text.length-1);
-        }
-        else {
-            var query = text.substring(settings.username.length + 10, text.length-1);
-        }
+    if (text.startsWith(settings.username + ", who is ") &&
+        text.charAt(text.length-1) === "?" &&
+        settings.admins.includes(nick)) {
+        
+        var query = text.substring(settings.username.length + 9, text.length-1);
 
         if (profiles[query]) {
             greetings.introduce(client, channel, query);

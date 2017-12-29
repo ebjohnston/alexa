@@ -87,11 +87,11 @@ var commands = {
     },
     "echo": {
         "name": "echo",
-        "help": "[admin] usage: " + settings.prefix + "echo [text] -- echos text as the bot into all channels",
+        "help": "usage: " + settings.prefix + "echo [text] -- echos text as the bot into all channels",
         "admin": true,
         "suffix": true,
         "process": (client, nick, suffix) => {
-            for(channel in settings.parameters.channels) {
+            for (channel in settings.parameters.channels) {
                 client.say(settings.parameters.channels[channel], suffix);
             }
         }
@@ -108,7 +108,7 @@ var commands = {
     },
     "help": {
         "name": "help",
-        "help": "... this is the command you are using right now",
+        "help": "... this is the command you are using right now.",
         "admin": false,
         "suffix": false,
         "process": (client, nick, suffix) => {
@@ -141,7 +141,12 @@ var commands = {
                 }
             }
             else if (commands[suffix]) {
-                client.say(nick, commands[suffix]["help"]);
+                if (commands[suffix]["admin"]) {
+                    client.say(nick, "[admin] " + commands[suffix]["help"]);
+                }
+                else {
+                    client.say(nick, commands[suffix]["help"]);
+                }
             }
             else {
                 client.say(nick, "Command not recognized. Try using " + settings.prefix + "help without an operand.");
@@ -191,6 +196,18 @@ var commands = {
         "suffix": false,
         "process": (client, nick, suffix) => {
             client.say(nick, "pong");
+        }
+    },
+    "rejoin": {
+        "name": "rejoin",
+        "help": "usage: " + settings.prefix + "rejoin -- /joins all channels",
+        "admin": true,
+        "suffix": false,
+        "process": (client, nick, suffix) => {
+            for (channel in settings.parameters.channels) {
+                client.say(nick, "Rejoining channels...");
+                client.join(settings.parameters.channels[channel]);
+            }
         }
     },
     "source": {

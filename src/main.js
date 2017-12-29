@@ -18,6 +18,7 @@ client.addListener("registered", () => {
     }, settings.cooldown * 1000 * 60 * 60);
 });
 
+// pm command parser
 client.addListener("pm", (nick, text, message) => {
     if (!text.startsWith(settings.prefix)) {
         client.say(nick, "I don't recognize this syntax. Type " + settings.prefix + "help for more information.");
@@ -76,16 +77,10 @@ client.addListener("quit", (nick, reason, channels, message) => {
     var quitMessage = message.args[0];
     var regex = new RegExp(netName + "[\\d\\D]+" + netName);
 
-    console.log("debug - netsplit quit - network name: " + netName);
-    console.log("debug - netsplit quit - reason: " + quitMessage);
-    console.log("debug - netsplit quit - message: " + JSON.stringify(message));
-    console.log("debug - netsplit quit - regex: " + regex);
-
     if (!duplicates.includes(nick) && regex.test(quitMessage)) {
-        console.log("debug - netsplit quit - nick added: " + nick);
         duplicates.push(nick);
     }
-})
+});
 
 client.addListener("error", (message) => {
     console.log("error: ", message);

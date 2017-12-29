@@ -92,7 +92,12 @@ var commands = {
         "suffix": true,
         "process": (client, nick, suffix) => {
             for (channel in settings.parameters.channels) {
-                client.say(settings.parameters.channels[channel], suffix);
+                if (suffix.startsWith("/me ")) {
+                    client.action(settings.parameters.channels[channel], suffix.substring(4));
+                }
+                else {
+                    client.say(settings.parameters.channels[channel], suffix);
+                }
             }
         }
     },

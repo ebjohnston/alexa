@@ -48,7 +48,7 @@ client.addListener("message#", (nick, channel, text, message) => {
     if (text.startsWith(settings.username + ", who is ") &&
         text.charAt(text.length-1) === "?" &&
         settings.admins.includes(nick)) {
-        
+
         var query = text.substring(settings.username.length + 9, text.length-1);
 
         if (profiles[query]) {
@@ -61,27 +61,42 @@ client.addListener("message#", (nick, channel, text, message) => {
 });
 
 client.addListener("join", (channel, nick, message) => {
-    processNick(channel, nick);
+    processNick(channel, nick, true);
 });
 
 client.addListener("nick", (oldNick, newNick, channels, message) => {
     for (channel in channels) {
-        processNick(channels[channel], newNick);
+        processNick(channels[channel], newNick, false);
     }
 });
+
+// handles netsplits
+client.addListener("quit", (nick, reason, channels, message) => {
+    var netName = settings.network.split(".")[1];
+    var quitMessage = message.args[0];
+    var regex = new RegExp(netName + "[\\d\\D]+" + netName);
+
+    console.log("debug - netsplit quit - network name: " + netName);
+    console.log("debug - netsplit quit - reason: " + quitMessage);
+    console.log("debug - netsplit quit - message: " + JSON.stringify(message));
+    console.log("debug - netsplit quit - regex: " + regex);
+
+    if (!duplicates.includes(nick) && regex.test(quitMessage)) {
+        console.log("debug - netsplit quit - nick added: " + nick);
+        duplicates.push(nick);
+    }
+})
 
 client.addListener("error", (message) => {
     console.log("error: ", message);
 });
 
-function processNick(channel, nick) {
-    if (profiles[nick]) {
-        if (!duplicates.includes(nick)) {
-            greetings.introduce(client, channel, nick);
-            duplicates.push(nick);
-        }
+function processNick(channel, nick, notifyFlag) {
+    if (!duplicates.includes(nick) && profiles[nick]) {
+        greetings.introduce(client, channel, nick);
+        duplicates.push(nick);
     }
-    else {
+    else if (notifyFlag) {
         greetings.notify(client, nick);
     }
 }

@@ -87,7 +87,8 @@ var commands = {
     },
     "echo": {
         "name": "echo",
-        "help": "usage: " + settings.prefix + "echo [text] -- echos text as the bot into all channels",
+        "help": "usage: " + settings.prefix + "echo [text] -- echos text as the bot into all channels. " +
+                "alternative usage: " + settings.prefix + "echo /me [text] -- echos text as an action instead.",
         "admin": true,
         "suffix": true,
         "process": (client, nick, suffix) => {

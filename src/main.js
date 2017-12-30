@@ -91,7 +91,7 @@ function processNick(channel, nick, notifyFlag) {
         greetings.introduce(client, channel, nick);
         duplicates.push(nick);
     }
-    else if (notifyFlag) {
+    else if (notifyFlag && !profiles[nick]) {
         greetings.notify(client, nick);
     }
 }

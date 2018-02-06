@@ -37,7 +37,7 @@ function describe(nick) {
     var output = "";
 
     if (profiles[nick]["description"]) {
-        output += " " + profiles[nick].description + ".";
+        output += " " + profiles[nick].description;
     }
     if (profiles[nick]["image"]) {
         output += " ( " + profiles[nick].image;

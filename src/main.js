@@ -9,13 +9,23 @@ var settings = require("./settings.json");
 var profiles = require("./profiles.json");
 
 var client = new irc.Client(settings.network, settings.username, settings.parameters);
-var duplicates = [];
+var duplicates = {};
 
 client.addListener("registered", () => {
     setInterval( () => {
-        duplicates = [];
         console.log("resetting duplicates...");
-    }, settings.cooldown * 1000 * 60 * 60);
+
+        var now = Date.now();
+
+        for (nick in duplicates) {
+            var then = duplicates[nick]["time"];
+            var hours = (now - then) / (60 * 60 * 1000);
+
+            if (hours >= settings.cooldown) {
+                delete duplicates[nick];
+            }
+        }
+    }, 05 * 60 * 1000);
 });
 
 // pm command parser
@@ -77,8 +87,8 @@ client.addListener("quit", (nick, reason, channels, message) => {
     var quitMessage = message.args[0];
     var regex = new RegExp(netName + "[\\d\\D]+" + netName);
 
-    if (!duplicates.includes(nick) && regex.test(quitMessage)) {
-        duplicates.push(nick);
+    if (!duplicates[nick] && regex.test(quitMessage)) {
+        addDuplicate(nick);
     }
 });
 
@@ -87,11 +97,17 @@ client.addListener("error", (message) => {
 });
 
 function processNick(channel, nick, notifyFlag) {
-    if (!duplicates.includes(nick) && profiles[nick]) {
+    if (!duplicates[nick] && profiles[nick]) {
         greetings.introduce(client, channel, nick);
-        duplicates.push(nick);
+        addDuplicate(nick);
     }
     else if (notifyFlag && !profiles[nick]) {
         greetings.notify(client, nick);
+    }
+}
+
+function addDuplicate(nick) {
+    duplicates[nick] = {
+        "time": Date.now()
     }
 }

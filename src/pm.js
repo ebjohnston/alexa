@@ -285,8 +285,7 @@ function writeProfiles() {
             console.log(err);
         }
         else {
-            console.log(JSON.stringify(profiles));
-            console.log('writing to ' + PROFILES_DIRECTORY);
+            console.log('writing profiles to ' + PROFILES_DIRECTORY);
         }
     });
 }

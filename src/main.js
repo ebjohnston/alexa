@@ -88,7 +88,7 @@ client.addListener("quit", (nick, reason, channels, message) => {
     var regex = new RegExp(netName + "[\\d\\D]+" + netName);
 
     if (!duplicates[nick] && regex.test(quitMessage)) {
-        addDuplicate(nick);
+        sleep(10 * 1000);
     }
 });
 
@@ -110,4 +110,8 @@ function addDuplicate(nick) {
     duplicates[nick] = {
         "time": Date.now()
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -1,7 +1,7 @@
 {
     "name": "alexa",
     "version": "0.1.0",
-    "description": "IRC bot in Node.js",
+    "description": "IRC greeting bot",
     "main": "main.js",
     "readme": "README.md",
     "dependencies": {

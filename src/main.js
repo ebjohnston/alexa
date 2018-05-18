@@ -87,8 +87,8 @@ client.addListener("quit", (nick, reason, channels, message) => {
     var quitMessage = message.args[0];
     var regex = new RegExp(netName + "[\\d\\D]+" + netName);
 
-    if (!duplicates[nick] && regex.test(quitMessage)) {
-        sleep(10 * 1000);
+    if (regex.test(quitMessage)) {
+        sleep(settings.netsplit * 1000);
     }
 });
 

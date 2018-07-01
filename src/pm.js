@@ -19,28 +19,30 @@ var commands = {
         "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
-            if (!profiles[nick]) {
+            var key = nick.toLowerCase();
+
+            if (!profiles[key]) {
                 client.say(nick, "You do not yet have a profile configured. Please add a profile before modifying the counter. " +
                            "See " + settings.prefix + "help for more information.");
             }
             else if (suffix === "on") {
-                profiles[nick]["counter"]["enable"] = true;
+                profiles[key]["counter"]["enable"] = true;
                 writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been enabled.");
             }
             else if (suffix === "off") {
-                profiles[nick]["counter"]["enable"] = false;
-                profiles[nick]["counter"]["count"] = 0;
+                profiles[key]["counter"]["enable"] = false;
+                profiles[key]["counter"]["count"] = 0;
                 writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been disabled and reset.");
             }
             else if (suffix === "reset") {
-                profiles[nick]["counter"]["count"] = 0;
+                profiles[key]["counter"]["count"] = 0;
                 writeProfiles();
                 client.say(nick, "The counter for " + nick + " has been reset to zero.");
             }
             else if (suffix === "show") {
-                client.say(nick, "The current counter value for " + nick + " is: " + profiles[nick]["counter"]["count"]);
+                client.say(nick, "The current counter value for " + nick + " is: " + profiles[key]["counter"]["count"]);
             }
             else {
                 client.say(nick, "parameter not recognized. " + commands["counter"].help);
@@ -54,18 +56,20 @@ var commands = {
         "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
+            var key = nick.toLowerCase();
+
             if (suffix === "all") {
-                delete profiles[nick];
+                delete profiles[key];
                 writeProfiles();
                 client.say(nick, "your profile has been successfully cleared.");
             }
             else if (suffix === "description" || suffix === "image" || suffix === "link") {
-                delete profiles[nick][suffix];
+                delete profiles[key][suffix];
                 writeProfiles();
                 client.say(nick, "your profile's " + suffix + " has been successfully removed.");
 
-                if (!profiles[nick]["description"] && !profiles[nick]["image"] && !profiles[nick]["link"]) {
-                    delete profiles[nick];
+                if (!profiles[key]["description"] && !profiles[key]["image"] && !profiles[key]["link"]) {
+                    delete profiles[key];
                     writeProfiles();
                     client.say(nick, "No remaining profile attributes. Your profile has been cleared and reset.");
                 }
@@ -176,17 +180,19 @@ var commands = {
         "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
-            if (!profiles[nick]) {
+            var key = nick.toLowerCase();
+
+            if (!profiles[key]) {
                 client.say(nick, "You do not yet have a profile configured. Please add a profile before enabling notifications. See " +
                            settings.prefix + "help for more information.");
             }
             else if (suffix === "on") {
-                profiles[nick]["notify"] = true;
+                profiles[key]["notify"] = true;
                 writeProfiles();
                 client.say(nick, "Notifications are now enabled for user " + nick + ".");
             }
             else if (suffix === "off") {
-                profiles[nick]["notify"] = false;
+                profiles[key]["notify"] = false;
                 writeProfiles();
                 client.say(nick, "Notifications are now disabled for user " + nick + ".");
             }
@@ -231,16 +237,19 @@ var commands = {
         "admin": false,
         "suffix": true,
         "process": (client, nick, suffix) => {
-            if (profiles[suffix]) {
-                client.say(nick, suffix + " is:" + greetings.describe(suffix));
+            // sanitize nick query
+            key = suffix.toLowerCase().split(" ")[0];
 
-                if (nick != suffix) {
-                    if (profiles[suffix]["notify"]) {
-                        client.say(suffix, nick + " has just requested your information via " + settings.prefix + "who. " +
+            if (profiles[key]) {
+                client.say(nick, suffix + " is:" + greetings.describe(key));
+
+                if (nick.toLowerCase() != key) {
+                    if (profiles[key]["notify"]) {
+                        client.say(key, nick + " has just requested your information via " + settings.prefix + "who. " +
                                    "To disable these notifications, PM me: " + settings.prefix + "notify off.");
                     }
-                    if (profiles[suffix]["counter"]["enable"]) {
-                        profiles[suffix]["counter"]["count"] += 1;
+                    if (profiles[key]["counter"]["enable"]) {
+                        profiles[key]["counter"]["count"] += 1;
                     }
                 }
             }
@@ -263,24 +272,26 @@ function addProfileInfo(client, nick, suffix, type, max) {
         client.say(nick, "Maximum character limit exceeded. Please make sure your " + type + " is less than " + max + " characters and try again.");
     }
     else {
-        if (!profiles[nick]) {
-            profiles[nick] = {};
+        key = nick.toLowerCase(); // ensure homogenous keys
 
-            profiles[nick]["notify"] = false;
-            profiles[nick]["counter"] = {
+        if (!profiles[key]) {
+            profiles[key] = {};
+
+            profiles[key]["notify"] = false;
+            profiles[key]["counter"] = {
                 "enable": true,
                 "count": 0
             };
         }
 
-        if (profiles[nick][type]) {
-            client.say(nick, "Your " + type + " has been successfully updated. Type !who [your name] to view your full profile.");
+        if (profiles[key][type]) {
+            client.say(nick, "Your " + type + " has been successfully updated. Type \"!who " + nick + "\" to view your full profile.");
         }
         else {
-            client.say(nick, "Your " + type + " has been successfully added. Type !who [your name] to view your full profile.");
+            client.say(nick, "Your " + type + " has been successfully added. Type \"!who " + nick + "\" to view your full profile.");
         }
 
-        profiles[nick][type] = suffix;
+        profiles[key][type] = suffix;
 
         writeProfiles();
     }

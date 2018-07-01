@@ -61,9 +61,10 @@ client.addListener("message#", (nick, channel, text, message) => {
         settings.admins.includes(nick)) {
 
         var query = text.substring(settings.username.length + 9, text.length-1);
+        var key = query.toLowerCase();
 
-        if (profiles[query]) {
-            greetings.introduce(client, channel, query);
+        if (profiles[key]) {
+            greetings.introduce(client, channel, key, query);
         }
         else {
             client.say(channel, "Sorry, I don't recognize the name " + query + ".");
@@ -97,11 +98,13 @@ client.addListener("error", (message) => {
 });
 
 function processNick(channel, nick, notifyFlag) {
-    if (!duplicates[nick] && profiles[nick]) {
-        greetings.introduce(client, channel, nick);
-        addDuplicate(nick);
+    key = nick.toLowerCase(); // ensure homogenous keys
+
+    if (!duplicates[key] && profiles[key]) {
+        greetings.introduce(client, channel, key, nick);
+        addDuplicate(key);
     }
-    else if (notifyFlag && !profiles[nick]) {
+    else if (notifyFlag && !profiles[key]) {
         greetings.notify(client, nick);
     }
 }

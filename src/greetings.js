@@ -3,7 +3,7 @@
 var settings = require("./settings.json");
 var profiles = require("./profiles.json");
 
-function introduce(client, channel, nick) {
+function introduce(client, channel, key, nick) {
     var intros = [
         "hmms...",
         "announces:",
@@ -26,7 +26,7 @@ function introduce(client, channel, nick) {
     var stammer = Math.floor(Math.random() * stammers.length);
     output += stammers[stammer];
 
-    output += describe(nick);
+    output += describe(key);
 
     output += "\"";
 

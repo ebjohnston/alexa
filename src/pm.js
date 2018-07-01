@@ -245,7 +245,14 @@ var commands = {
                 }
             }
             else {
-                client.say(nick, "Sorry, I don't recognize this name.");
+                client.whois(suffix, (info) => {
+                    if (info.user) { // user is online, but has no profile
+                        client.say(nick, "Sorry, this user has not configured a profile.");
+                    }
+                    else {
+                        client.say(nick, "Sorry, I don't recognize this name.");
+                    }
+                });
             }
         }
     }
@@ -285,7 +292,7 @@ function writeProfiles() {
             console.log(err);
         }
         else {
-            console.log('writing profiles to ' + PROFILES_DIRECTORY);
+            console.log("Writing profiles to " + PROFILES_DIRECTORY);
         }
     });
 }

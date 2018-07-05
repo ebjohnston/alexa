@@ -55,7 +55,7 @@ function describe(nick) {
 
 function notify(client, nick) {
     client.notice(nick, "Hello, I am the new greeting bot. My name is " + settings.username + ". " +
-                        "If you want to fill your description to avoid repetitive questions like \"who/what are you?\", " +
+                        "If you want to fill your description to avoid repetitive questions like \"who are you?\", " +
                         "please type /msg " + settings.username + " " + settings.prefix + "help for instructions. " +
                         "You won't see this message anymore if you have a description, as well.");
 }

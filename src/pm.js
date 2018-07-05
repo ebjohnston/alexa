@@ -124,10 +124,10 @@ var commands = {
         "process": (client, nick, suffix) => {
             if (/^\s*$/.test(suffix)) { // check if suffix is all whitespace or empty
                 client.say(nick, "Hello! My name is " + settings.username + " and I am a greeting bot. " +
-                                 "If you would like to add your character's description to my database, " +
-                                 "you can do so with the commands " + settings.prefix + "desc (to set a quick text description), " +
-                                 settings.prefix + "img (to link to an image reference), or " + settings.prefix +
-                                 "link (to link to an extended character profile).");
+                                 "If you would like to add your nickname's description to my database, " +
+                                 "you can do so with the commands " + settings.prefix + "desc (to set a " +
+                                 "quick text description), " + settings.prefix + "img (to link to an " +
+                                 "image reference), or " + settings.prefix + "link (to link to an extended profile).");
 
                 var list = "";
                 for (command in commands) {
@@ -143,7 +143,7 @@ var commands = {
                     list = "";
                     for (command in commands) {
                         if (commands[command]["admin"]) {
-                            list += commands[command]["name"] + " ";
+                            list += settings.prefix + commands[command]["name"] + " ";
                         }
                     }
 
@@ -228,7 +228,7 @@ var commands = {
         "admin": false,
         "suffix": false,
         "process": (client, nick, suffix) => {
-            client.say(nick, "My source code can be found at: https://github.com/XavierRaine/alexa");
+            client.say(nick, "My source code can be found at: https://github.com/ebjohnston/alexa");
         }
     },
     "who": {
@@ -284,14 +284,14 @@ function addProfileInfo(client, nick, suffix, type, max) {
             };
         }
 
+        profiles[key][type] = suffix;
+
         if (profiles[key][type]) {
             client.say(nick, "Your " + type + " has been successfully updated. Type \"!who " + nick + "\" to view your full profile.");
         }
         else {
             client.say(nick, "Your " + type + " has been successfully added. Type \"!who " + nick + "\" to view your full profile.");
         }
-
-        profiles[key][type] = suffix;
 
         writeProfiles();
     }

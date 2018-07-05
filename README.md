@@ -4,7 +4,7 @@ IRC greeting bot created in Node.js
 ## Installation
 1. Clone this repo
     ```
-    git clone https://github.com/XavierRaine/alexa.git
+    git clone https://github.com/ebjohnston/alexa.git
     ```
 
 1. Install node project manager dependencies [Note: requires NPM to be installed already]

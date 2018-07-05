@@ -1,29 +1,25 @@
 {
     "name": "alexa",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "IRC greeting bot",
-    "main": "main.js",
+    "main": "src/main.js",
     "readme": "README.md",
     "dependencies": {
         "irc": "^0.5.2"
     },
-    "devDependencies": {},
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/XavierRaine/alexa.git"
+        "url": "git+https://github.com/ebjohnston/alexa.git"
     },
     "keywords": [
         "IRC",
         "bot",
         "greeting"
     ],
-    "author": "Xavier",
-    "license": "\tISC",
+    "author": "Ethan Johnston",
+    "license": "AGPL-3.0-or-later",
     "bugs": {
-        "url": "https://github.com/XavierRaine/alexa/issues"
+        "url": "https://github.com/ebjohnston/alexa/issues"
     },
-    "homepage": "https://github.com/XavierRaine/alexa#readme"
+    "homepage": "https://github.com/ebjohnston/alexa#readme"
 }

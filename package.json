@@ -1,25 +1,31 @@
 {
-    "name": "alexa",
-    "version": "1.0.0",
-    "description": "IRC greeting bot",
-    "main": "src/main.js",
-    "readme": "README.md",
-    "dependencies": {
-        "irc": "^0.5.2"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ebjohnston/alexa.git"
-    },
-    "keywords": [
-        "IRC",
-        "bot",
-        "greeting"
-    ],
-    "author": "Ethan Johnston",
-    "license": "AGPL-3.0-or-later",
-    "bugs": {
-        "url": "https://github.com/ebjohnston/alexa/issues"
-    },
-    "homepage": "https://github.com/ebjohnston/alexa#readme"
+  "name": "alexa",
+  "version": "1.0.0",
+  "description": "IRC greeting bot",
+  "main": "src/main.js",
+  "readme": "README.md",
+  "dependencies": {
+    "irc": "^0.5.2"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ebjohnston/alexa.git"
+  },
+  "keywords": [
+    "IRC",
+    "bot",
+    "greeting"
+  ],
+  "author": "Ethan Johnston",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ebjohnston/alexa/issues"
+  },
+  "homepage": "https://github.com/ebjohnston/alexa#readme"
 }

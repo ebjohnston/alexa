@@ -1,12 +1,12 @@
 {
-    "network": "irc.yournetwork.com",
-    "username": "myNick",
-    "parameters": {
-        "channels": ["#channel"],
-        "password": "myPass"
-    },
-    "prefix": "!",
-    "cooldown": 6,
-    "netsplit": 60,
-    "admins": ["adminNick"]
+  "network": "irc.yournetwork.com",
+  "username": "myNick",
+  "parameters": {
+    "channels": ["#channel"],
+    "password": "myPass"
+  },
+  "prefix": "!",
+  "cooldown": 6,
+  "netsplit": 60,
+  "admins": ["adminNick"]
 }

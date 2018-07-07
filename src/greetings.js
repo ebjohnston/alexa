@@ -1,10 +1,10 @@
 // greeting message creator
 
-var settings = require('./settings.json')
-var profiles = require('./profiles.json')
+const settings = require('./settings.json')
+const profiles = require('./profiles.json')
 
 function introduce (client, channel, key, nick) {
-  var intros = [
+  let intros = [
     'hmms...',
     'announces:',
     'traces through her list...',
@@ -12,18 +12,18 @@ function introduce (client, channel, key, nick) {
     'boots up...'
   ]
 
-  var stammers = [
+  let stammers = [
     nick + ',',
     "Let's see... " + nick + '...',
     'Er... ' + nick + '... Ah! Here you are:'
   ]
 
-  var output = ''
+  let output = ''
 
-  var intro = Math.floor(Math.random() * intros.length)
+  let intro = Math.floor(Math.random() * intros.length)
   output += intros[intro] + ' "'
 
-  var stammer = Math.floor(Math.random() * stammers.length)
+  let stammer = Math.floor(Math.random() * stammers.length)
   output += stammers[stammer]
 
   output += describe(key)
@@ -34,7 +34,7 @@ function introduce (client, channel, key, nick) {
 }
 
 function describe (nick) {
-  var output = ''
+  let output = ''
 
   if (profiles[nick]['description']) {
     output += ' ' + profiles[nick].description

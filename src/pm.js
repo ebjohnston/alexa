@@ -1,14 +1,13 @@
 // private message handler
+const fs = require('fs')
 
-var fs = require('fs')
-
-var greetings = require('./greetings.js')
+const greetings = require('./greetings.js')
 
 const PROFILES_DIRECTORY = './profiles.json'
-var profiles = require(PROFILES_DIRECTORY)
-var settings = require('./settings.json')
+const profiles = require(PROFILES_DIRECTORY)
+const settings = require('./settings.json')
 
-var commands = {
+const commands = {
   'counter': {
     'name': 'counter',
     'help': 'usage: ' + settings.prefix + 'counter [on | off | show | reset] -- ' +
@@ -19,7 +18,7 @@ var commands = {
     'admin': false,
     'suffix': true,
     'process': (client, nick, suffix) => {
-      var key = nick.toLowerCase()
+      let key = nick.toLowerCase()
 
       if (!profiles[key]) {
         client.say(nick, 'You do not yet have a profile configured. Please add a profile before modifying the counter. ' +
@@ -51,7 +50,7 @@ var commands = {
     'admin': false,
     'suffix': true,
     'process': (client, nick, suffix) => {
-      var key = nick.toLowerCase()
+      let key = nick.toLowerCase()
 
       if (suffix === 'all') {
         delete profiles[key]
@@ -89,7 +88,7 @@ var commands = {
     'admin': true,
     'suffix': true,
     'process': (client, nick, suffix) => {
-      for (var channel in settings.parameters.channels) {
+      for (let channel in settings.parameters.channels) {
         if (suffix.startsWith('/me ')) {
           client.action(settings.parameters.channels[channel], suffix.substring(4))
         } else {
@@ -121,8 +120,8 @@ var commands = {
                                  'quick text description), ' + settings.prefix + 'img (to link to an ' +
                                  'image reference), or ' + settings.prefix + 'link (to link to an extended profile).')
 
-        var list = ''
-        for (var command in commands) {
+        let list = ''
+        for (let command in commands) {
           if (!commands[command]['admin']) {
             list += settings.prefix + commands[command]['name'] + ' '
           }
@@ -133,7 +132,7 @@ var commands = {
 
         if (settings.admins.includes(nick)) {
           list = ''
-          for (command in commands) {
+          for (let command in commands) {
             if (commands[command]['admin']) {
               list += settings.prefix + commands[command]['name'] + ' '
             }
@@ -169,7 +168,7 @@ var commands = {
     'admin': false,
     'suffix': true,
     'process': (client, nick, suffix) => {
-      var key = nick.toLowerCase()
+      let key = nick.toLowerCase()
 
       if (!profiles[key]) {
         client.say(nick, 'You do not yet have a profile configured. Please add a profile before enabling notifications. See ' +
@@ -224,7 +223,7 @@ var commands = {
     'suffix': true,
     'process': (client, nick, suffix) => {
       // sanitize nick query
-      var key = suffix.toLowerCase().split(' ')[0]
+      let key = suffix.toLowerCase().split(' ')[0]
 
       if (profiles[key]) {
         client.say(nick, suffix + ' is:' + greetings.describe(key))
@@ -255,7 +254,7 @@ function addProfileInfo (client, nick, suffix, type, max) {
   if (suffix.length > max) {
     client.say(nick, 'Maximum character limit exceeded. Please make sure your ' + type + ' is less than ' + max + ' characters and try again.')
   } else {
-    var key = nick.toLowerCase() // ensure homogenous keys
+    let key = nick.toLowerCase() // ensure homogenous keys
 
     if (!profiles[key]) {
       profiles[key] = {}

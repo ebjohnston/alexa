@@ -1,25 +1,24 @@
-// IRC bot framework
+const irc = require('irc')
 
-var irc = require('irc')
+const greetings = require('./greetings.js')
+const pm = require('./pm.js')
 
-var greetings = require('./greetings.js')
-var pm = require('./pm.js')
+const settings = require('./settings.json')
+const profiles = require('./profiles.json')
 
-var settings = require('./settings.json')
-var profiles = require('./profiles.json')
+const client = new irc.Client(settings.network, settings.username, settings.parameters)
 
-var client = new irc.Client(settings.network, settings.username, settings.parameters)
-var duplicates = {}
+let duplicates = {}
 
 client.addListener('registered', () => {
   setInterval(() => {
     console.log('resetting duplicates...')
 
-    var now = Date.now()
+    let now = Date.now()
 
-    for (var nick in duplicates) {
-      var then = duplicates[nick]['time']
-      var hours = (now - then) / (60 * 60 * 1000)
+    for (let nick in duplicates) {
+      let then = duplicates[nick]['time']
+      let hours = (now - then) / (60 * 60 * 1000)
 
       if (hours >= settings.cooldown) {
         delete duplicates[nick]
@@ -33,8 +32,8 @@ client.addListener('pm', (nick, text, message) => {
   if (!text.startsWith(settings.prefix)) {
     client.say(nick, "I don't recognize this syntax. Type " + settings.prefix + 'help for more information.')
   } else {
-    var command = text.substring(settings.prefix.length).split(' ')[0]
-    var suffix = text.substring(settings.prefix.length + command.length + 1)
+    let command = text.substring(settings.prefix.length).split(' ')[0]
+    let suffix = text.substring(settings.prefix.length + command.length + 1)
 
     if (pm.commands[command]) {
       if (pm.commands[command]['admin'] && !settings.admins.includes(nick)) {
@@ -55,8 +54,8 @@ client.addListener('message#', (nick, channel, text, message) => {
   if (text.startsWith(settings.username + ', who is ') &&
         text.charAt(text.length - 1) === '?' &&
         settings.admins.includes(nick)) {
-    var query = text.substring(settings.username.length + 9, text.length - 1)
-    var key = query.toLowerCase()
+    let query = text.substring(settings.username.length + 9, text.length - 1)
+    let key = query.toLowerCase()
 
     if (profiles[key]) {
       greetings.introduce(client, channel, key, query)
@@ -71,18 +70,19 @@ client.addListener('join', (channel, nick, message) => {
 })
 
 client.addListener('nick', (oldNick, newNick, channels, message) => {
-  for (var channel in channels) {
+  for (let channel in channels) {
     processNick(channels[channel], newNick, false)
   }
 })
 
 // handles netsplits
 client.addListener('quit', (nick, reason, channels, message) => {
-  var netName = settings.network.split('.')[1]
-  var quitMessage = message.args[0]
-  var regex = new RegExp(netName + '[\\d\\D]+' + netName)
+  let netName = settings.network.split('.')[1]
+  let quitMessage = message.args[0]
+  let regex = new RegExp(netName + '[\\d\\D]+' + netName)
 
   if (regex.test(quitMessage)) {
+    addDuplicate(nick.toLowerCase())
     sleep(settings.netsplit * 1000)
   }
 })
@@ -92,7 +92,7 @@ client.addListener('error', (message) => {
 })
 
 function processNick (channel, nick, notifyFlag) {
-  var key = nick.toLowerCase() // ensure homogenous keys
+  let key = nick.toLowerCase() // ensure homogenous keys
 
   if (!duplicates[key] && profiles[key]) {
     greetings.introduce(client, channel, key, nick)

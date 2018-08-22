@@ -8,6 +8,22 @@ const profiles = require(PROFILES_DIRECTORY)
 const settings = require('./settings.json')
 
 const commands = {
+  'backup': {
+    'name': 'backup',
+    'help': 'admin command used to store profiles to backup file',
+    'admin': true,
+    'suffix': false,
+    'process': (client, nick, suffix) => {
+      fs.writeFile('./profiles-backup.json', JSON.stringify(profiles), (err) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('backing up profiles on command...')
+          client.say(nick, 'Profiles backed up successfully.')
+        }
+      })
+    }
+  }
   'counter': {
     'name': 'counter',
     'help': 'usage: ' + settings.prefix + 'counter [on | off | show | reset] -- ' +

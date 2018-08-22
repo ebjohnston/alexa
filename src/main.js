@@ -1,10 +1,10 @@
 const irc = require('irc')
 
-const greetings = require('./greetings.js')
-const pm = require('./pm.js')
+const greetings = require(__dirname + '/greetings.js')
+const pm = require(__dirname + '/pm.js')
 
-const settings = require('./settings.json')
-const profiles = require('./profiles.json')
+const settings = require(__dirname + '/settings.json')
+const profiles = require(__dirname + '/profiles.json')
 
 const client = new irc.Client(settings.network, settings.username, settings.parameters)
 

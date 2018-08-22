@@ -4,6 +4,7 @@ node_modules/
 # configuration files (sensitive data)
 settings.json
 profiles.json
+profiles-backup.json
 
 # debugging log
 npm-debug.log

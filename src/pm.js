@@ -1,11 +1,11 @@
 // private message handler
 const fs = require('fs')
 
-const greetings = require('./greetings.js')
+const greetings = require(__dirname + '/greetings.js')
 
-const PROFILES_DIRECTORY = './profiles.json'
+const PROFILES_DIRECTORY = __dirname + '/profiles.json'
 const profiles = require(PROFILES_DIRECTORY)
-const settings = require('./settings.json')
+const settings = require(__dirname + '/settings.json')
 
 const commands = {
   'backup': {
@@ -14,7 +14,7 @@ const commands = {
     'admin': true,
     'suffix': false,
     'process': (client, nick, suffix) => {
-      fs.writeFile('./profiles-backup.json', JSON.stringify(profiles), (err) => {
+      fs.writeFile(__dirname + '/profiles-backup.json', JSON.stringify(profiles), (err) => {
         if (err) {
           console.log(err)
         } else {

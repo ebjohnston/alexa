@@ -23,7 +23,7 @@ const commands = {
         }
       })
     }
-  }
+  },
   'counter': {
     'name': 'counter',
     'help': 'usage: ' + settings.prefix + 'counter [on | off | show | reset] -- ' +

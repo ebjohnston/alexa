@@ -25,22 +25,20 @@ const commands = {
                            'See ' + settings.prefix + 'help for more information.')
       } else if (suffix === 'on') {
         profiles[key]['counter']['enable'] = true
-        writeProfiles()
         client.say(nick, 'The counter for ' + nick + ' has been enabled.')
       } else if (suffix === 'off') {
         profiles[key]['counter']['enable'] = false
         profiles[key]['counter']['count'] = 0
-        writeProfiles()
         client.say(nick, 'The counter for ' + nick + ' has been disabled and reset.')
       } else if (suffix === 'reset') {
         profiles[key]['counter']['count'] = 0
-        writeProfiles()
         client.say(nick, 'The counter for ' + nick + ' has been reset to zero.')
       } else if (suffix === 'show') {
         client.say(nick, 'The current counter value for ' + nick + ' is: ' + profiles[key]['counter']['count'])
       } else {
         client.say(nick, 'parameter not recognized. ' + commands['counter'].help)
       }
+      writeProfiles(nick)
     }
   },
   'del': {
@@ -54,21 +52,20 @@ const commands = {
 
       if (suffix === 'all') {
         delete profiles[key]
-        writeProfiles()
         client.say(nick, 'your profile has been successfully cleared.')
       } else if (suffix === 'description' || suffix === 'image' || suffix === 'link') {
         delete profiles[key][suffix]
-        writeProfiles()
         client.say(nick, "your profile's " + suffix + ' has been successfully removed.')
 
         if (!profiles[key]['description'] && !profiles[key]['image'] && !profiles[key]['link']) {
           delete profiles[key]
-          writeProfiles()
           client.say(nick, 'No remaining profile attributes. Your profile has been cleared and reset.')
         }
       } else {
         client.say(nick, 'parameter not recognized. ' + commands['del'].help)
       }
+
+      writeProfiles(nick)
     }
   },
   'desc': {
@@ -175,15 +172,15 @@ const commands = {
                            settings.prefix + 'help for more information.')
       } else if (suffix === 'on') {
         profiles[key]['notify'] = true
-        writeProfiles()
         client.say(nick, 'Notifications are now enabled for user ' + nick + '.')
       } else if (suffix === 'off') {
         profiles[key]['notify'] = false
-        writeProfiles()
         client.say(nick, 'Notifications are now disabled for user ' + nick + '.')
       } else {
         client.say(nick, 'parameter not recognized. ' + commands['notify'].help)
       }
+
+      writeProfiles(nick)
     }
   },
   'ping': {
@@ -274,16 +271,16 @@ function addProfileInfo (client, nick, suffix, type, max) {
       client.say(nick, 'Your ' + type + ' has been successfully added. Type "!who ' + nick + '" to view your full profile.')
     }
 
-    writeProfiles()
+    writeProfiles(nick)
   }
 }
 
-function writeProfiles () {
+function writeProfiles (nick) {
   fs.writeFile(PROFILES_DIRECTORY, JSON.stringify(profiles), (err) => {
     if (err) {
       console.log(err)
     } else {
-      console.log('Writing profiles to ' + PROFILES_DIRECTORY)
+      console.log('Writing profiles to ' + PROFILES_DIRECTORY + ' for: ' + nick)
     }
   })
 }

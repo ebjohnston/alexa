@@ -12,8 +12,6 @@ let duplicates = {}
 
 client.addListener('registered', () => {
   setInterval(() => {
-    console.log('resetting duplicates...')
-
     let now = Date.now()
 
     for (let nick in duplicates) {

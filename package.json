@@ -8,7 +8,7 @@
     "irc": "^0.5.2"
   },
   "devDependencies": {
-    "standard": "^11.0.1"
+    "standard": "^16.0.4"
   },
   "scripts": {
     "test": "standard"

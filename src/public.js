@@ -90,7 +90,7 @@ const commands = {
     'admin': false,
     'suffix': true,
     'process': (client, channel, nick, suffix) => {
-      const diceLimit = 100
+      const diceLimit = 30
       const sideLimit = 100
 
       if (/^[dD]\d+$/.test(suffix)) { // make sure it matches dy syntax
@@ -114,10 +114,13 @@ const commands = {
           client.say(channel, "Those dice have too many sides!")
         } else {
           let sum = 0
+          let rolls = []
           for (let index = 0; index < diceCount; index++) {
-            sum += Math.ceil(Math.random() * sideCount)
+            newRoll = Math.ceil(Math.random() * sideCount)
+            sum += newRoll
+            rolls.push(newRoll)
           }
-          client.say(channel, "You roll " + suffix + " and get... " + sum + "!")
+          client.say(channel, "You roll " + suffix + " and get... " + sum + "! " + JSON.stringify(rolls))
         }
       } else {
         client.say(channel, commands['roll']['help'])
@@ -130,7 +133,13 @@ const commands = {
     'admin': true,
     'suffix': true,
     'process': (client, channel, nick, suffix) => {
-      greetings.introduce(client, channel, suffix)
+      key = suffix.toLowerCase()
+
+      if (profiles[key]) {
+        greetings.introduce(client, channel, suffix)
+      } else {
+        client.say(channel, "Sorry, I don't recognize the name " + suffix + '.')
+      }
     }
   }
 }

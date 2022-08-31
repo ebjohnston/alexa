@@ -337,6 +337,17 @@ const commands = {
         })
       }
     }
+  },
+  'whois': {
+    'name': 'whois',
+    'help': 'usage: ' + settings.prefix + 'whois [nick] -- returns WHOIS response, for debugging.',
+    'admin': true,
+    'suffix': true,
+    'process': (client, nick, suffix) => {
+      client.whois(suffix, (info) => {
+        client.say(nick, JSON.stringify(info))
+      })
+    }
   }
 }
 

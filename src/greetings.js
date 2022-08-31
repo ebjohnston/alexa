@@ -3,7 +3,7 @@
 const settings = require('./settings.json')
 const profiles = require('./profiles.json')
 
-function introduce (client, channel, key, nick) {
+function introduce (client, channel, nick) {
   let intros = [
     'hmms...',
     'announces:',
@@ -26,6 +26,7 @@ function introduce (client, channel, key, nick) {
   let stammer = Math.floor(Math.random() * stammers.length)
   output += stammers[stammer]
 
+  let key = nick.toLowerCase() // ensure homogenous keys
   output += describe(key)
 
   output += '"'

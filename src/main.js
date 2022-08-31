@@ -2,6 +2,7 @@ const irc = require('irc')
 
 const greetings = require(__dirname + '/greetings.js')
 const pm = require(__dirname + '/pm.js')
+const public = require(__dirname + '/public.js')
 
 const settings = require(__dirname + '/settings.json')
 const profiles = require(__dirname + '/profiles.json')
@@ -48,7 +49,26 @@ client.addListener('pm', (nick, text, message) => {
   }
 })
 
+
 client.addListener('message#', (nick, channel, text, message) => {
+  if (text.startsWith(settings.prefix)) {
+    let command = text.substring(settings.prefix.length).split(' ')[0]
+    let suffix = text.substring(settings.prefix.length + command.length + 1)
+
+    if (public.commands[command]) {
+      if (public.commands[command]['admin'] && !settings.admins.includes(nick)) {
+        client.say(nick, 'You do not have permission to use ' + settings.prefix + channel + 'in public channels.')
+      } else if (public.commands[command]['suffix'] && /^\s*$/.test(suffix)) {
+        // check if suffix is required and not provided
+        client.say(nick, public.commands[command]['help'])
+      } else {
+        public.commands[command].process(client, channel, nick, suffix)
+      }
+    } else {
+      client.say(nick, "I don't recognize " + settings.prefix + command + ". Type " + settings.prefix + 'help in the channel for more information.')
+    }
+  }
+
   if (text.startsWith(settings.username + ', who is ') &&
         text.charAt(text.length - 1) === '?' &&
         settings.admins.includes(nick)) {
@@ -56,7 +76,7 @@ client.addListener('message#', (nick, channel, text, message) => {
     let key = query.toLowerCase()
 
     if (profiles[key]) {
-      greetings.introduce(client, channel, key, query)
+      greetings.introduce(client, channel, query)
     } else {
       client.say(channel, "Sorry, I don't recognize the name " + query + '.')
     }
@@ -89,11 +109,15 @@ client.addListener('error', (message) => {
   console.log('error: ', message)
 })
 
+client.addListener('names', (channel, nicks) => {
+  public.nickCache[channel] = nicks
+})
+
 function processNick (channel, nick, notifyFlag) {
   let key = nick.toLowerCase() // ensure homogenous keys
 
   if (!duplicates[key] && profiles[key]) {
-    greetings.introduce(client, channel, key, nick)
+    greetings.introduce(client, channel, nick)
     addDuplicate(key)
   } else if (notifyFlag && !profiles[key]) {
     greetings.notify(client, nick)

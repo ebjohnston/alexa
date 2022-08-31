@@ -24,6 +24,37 @@ const commands = {
       })
     }
   },
+  'bottle': {
+    'name': 'bottle',
+    'help': 'usage: ' + settings.prefix + 'counter [on | off | status] -- ' +
+                'this determines whether your name is included in the pool for the channel command !bottle. ' +
+                'By default, this flag is enabled.',
+    'admin': false,
+    'suffix': true,
+    'process': (client, nick, suffix) => {
+      let key = nick.toLowerCase()
+
+      if (!profiles[key]) {
+        client.say(nick, 'You do not yet have a profile configured. Please add a profile before modifying the bottle flag. ' +
+                           'See ' + settings.prefix + 'help for more information.')
+      } else if (suffix === 'on') {
+        profiles[key]['bottle']['enable'] = true
+        client.say(nick, 'The bottle flag for ' + nick + ' has been enabled.')
+      } else if (suffix === 'off') {
+        profiles[key]['bottle']['enable'] = false
+        client.say(nick, 'The bottle flag for ' + nick + ' has been disabled.')
+      } else if (suffix === 'status') {
+        if (profiles[key]['bottle']['enable']) {
+          client.say(nick, 'The bottle flag for ' + nick + ' is currently enabled.')
+        } else {
+          client.say(nick, 'The bottle flag for ' + nick + ' is currently disabled.')
+        }
+      } else {
+        client.say(nick, 'parameter not recognized. ' + commands['counter'].help)
+      }
+      writeProfiles(nick)
+    }
+  },
   'counter': {
     'name': 'counter',
     'help': 'usage: ' + settings.prefix + 'counter [on | off | show | reset] -- ' +
@@ -154,7 +185,7 @@ const commands = {
           client.say(nick, 'The list of available admin commands are: ' + list)
         }
       } else if (commands[suffix]) {
-        if (commands[suffix]['admin']) {
+        if (commands[suffix]['admin']  && settings.admins.includes(nick)) {
           client.say(nick, '[admin] ' + commands[suffix]['help'])
         } else {
           client.say(nick, commands[suffix]['help'])
@@ -229,6 +260,38 @@ const commands = {
       client.say(nick, 'My source code can be found at: https://github.com/ebjohnston/alexa')
     }
   },
+  'update': {
+    'name': 'update',
+    'help': 'usage: ' + settings.prefix + 'update -- updates the profiles to ensure schema compliance.',
+    'admin': true,
+    'suffix': false,
+    'process': (client, nick, suffix) => {
+      for (const profile of Object.keys(profiles)) {
+        if (!('bottle' in profiles[profile])) {
+          profiles[profile]['bottle'] = {
+            'enable': true
+          }
+          client.say(nick, "Updating bottle flag for: " + profile + "...")
+        }
+
+        if (!('counter' in profiles[profile])) {
+          profiles[profile]['counter'] = {
+            'enable': true,
+            'count': 0
+          }
+          client.say(nick, 'Updated count for: ' + profile + "...")
+        }
+
+        if (!('notify' in profiles[profile])) {
+          profiles[profile]['notify'] = false
+          client.say(nick, 'Updated notify for: ' + profile + "...")
+        }
+      }
+
+      writeProfiles("UPDATE:" + nick)
+      client.say(nick, "Profile update complete.")
+    }
+  },
   'who': {
     'name': 'who',
     'help': 'usage: ' + settings.prefix + 'who [nick] -- displays information about a nickname if found in my database.',
@@ -271,12 +334,15 @@ function addProfileInfo (client, nick, suffix, type, max) {
 
     if (!profiles[key]) {
       profiles[key] = {}
-
-      profiles[key]['notify'] = false
+      
+      profiles[key]['bottle'] = {
+        'enable': true
+      }
       profiles[key]['counter'] = {
         'enable': true,
         'count': 0
       }
+      profiles[key]['notify'] = false
     }
 
     profiles[key][type] = suffix

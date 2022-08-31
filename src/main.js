@@ -56,7 +56,7 @@ client.addListener('message#', (nick, channel, text, message) => {
     let key = query.toLowerCase()
 
     if (profiles[key]) {
-      greetings.introduce(client, channel, key, query)
+      greetings.introduce(client, channel, query)
     } else {
       client.say(channel, "Sorry, I don't recognize the name " + query + '.')
     }
@@ -93,7 +93,7 @@ function processNick (channel, nick, notifyFlag) {
   let key = nick.toLowerCase() // ensure homogenous keys
 
   if (!duplicates[key] && profiles[key]) {
-    greetings.introduce(client, channel, key, nick)
+    greetings.introduce(client, channel, nick)
     addDuplicate(key)
   } else if (notifyFlag && !profiles[key]) {
     greetings.notify(client, nick)

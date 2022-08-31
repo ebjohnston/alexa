@@ -24,6 +24,37 @@ const commands = {
       })
     }
   },
+  'bottle': {
+    'name': 'bottle',
+    'help': 'usage: ' + settings.prefix + 'counter [on | off | status] -- ' +
+                'this determines whether your name is included in the pool for the channel command !bottle. ' +
+                'By default, this flag is enabled.',
+    'admin': false,
+    'suffix': true,
+    'process': (client, nick, suffix) => {
+      let key = nick.toLowerCase()
+
+      if (!profiles[key]) {
+        client.say(nick, 'You do not yet have a profile configured. Please add a profile before modifying the bottle flag. ' +
+                           'See ' + settings.prefix + 'help for more information.')
+      } else if (suffix === 'on') {
+        profiles[key]['bottle']['enable'] = true
+        client.say(nick, 'The bottle flag for ' + nick + ' has been enabled.')
+      } else if (suffix === 'off') {
+        profiles[key]['bottle']['enable'] = false
+        client.say(nick, 'The bottle flag for ' + nick + ' has been disabled.')
+      } else if (suffix === 'status') {
+        if (profiles[key]['bottle']['enable']) {
+          client.say(nick, 'The bottle flag for ' + nick + ' is currently enabled.')
+        } else {
+          client.say(nick, 'The bottle flag for ' + nick + ' is currently disabled.')
+        }
+      } else {
+        client.say(nick, 'parameter not recognized. ' + commands['counter'].help)
+      }
+      writeProfiles(nick)
+    }
+  },
   'counter': {
     'name': 'counter',
     'help': 'usage: ' + settings.prefix + 'counter [on | off | show | reset] -- ' +
@@ -229,6 +260,29 @@ const commands = {
       client.say(nick, 'My source code can be found at: https://github.com/ebjohnston/alexa')
     }
   },
+  'update': {
+    'name': 'update',
+    'help': 'usage: ' + settings.prefix + 'update -- updates the profiles to ensure schema compliance.',
+    'admin': true,
+    'suffix': false,
+    'process': (client, nick, suffix) => {
+      for (var profile in Object.keys(profiles)) {
+        if (!profiles[profile]['counter']) {
+          profiles[profile]['counter']['enable'] = true,
+          profiles[profile]['counter']['count'] = 0
+          client.say(nick, 'Updated count for: ' + profile + "...")
+        }
+
+        if (!nick['bottle']) {
+          profiles[profile]['bottle']['enable'] = true
+          client.say(nick, "Updating bottle flag for: " + profile + "...")
+        }
+      }
+
+      writeProfiles("UPDATE:" + nick)
+      client.say(nick, "Profile update complete.")
+    }
+  },
   'who': {
     'name': 'who',
     'help': 'usage: ' + settings.prefix + 'who [nick] -- displays information about a nickname if found in my database.',
@@ -259,6 +313,17 @@ const commands = {
           }
         })
       }
+    }
+  },
+  'whois': {
+    'name': 'whois',
+    'help': 'usage: ' + settings.prefix + 'whois [nick] -- get a WHOIS response.',
+    'admin': true,
+    'suffix': true,
+    'process': (client, nick, suffix) => {
+      client.whois(suffix, (info) => {
+        client.say(nick, info)
+      })
     }
   }
 }

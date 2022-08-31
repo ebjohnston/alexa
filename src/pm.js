@@ -185,7 +185,7 @@ const commands = {
           client.say(nick, 'The list of available admin commands are: ' + list)
         }
       } else if (commands[suffix]) {
-        if (commands[suffix]['admin']) {
+        if (commands[suffix]['admin']  && settings.admins.includes(nick)) {
           client.say(nick, '[admin] ' + commands[suffix]['help'])
         } else {
           client.say(nick, commands[suffix]['help'])
@@ -266,16 +266,25 @@ const commands = {
     'admin': true,
     'suffix': false,
     'process': (client, nick, suffix) => {
-      for (var profile in Object.keys(profiles)) {
-        if (!profiles[profile]['counter']) {
-          profiles[profile]['counter']['enable'] = true,
-          profiles[profile]['counter']['count'] = 0
+      for (const profile of Object.keys(profiles)) {
+        if (!('bottle' in profiles[profile])) {
+          profiles[profile]['bottle'] = {
+            'enable': true
+          }
+          client.say(nick, "Updating bottle flag for: " + profile + "...")
+        }
+
+        if (!('counter' in profiles[profile])) {
+          profiles[profile]['counter'] = {
+            'enable': true,
+            'count': 0
+          }
           client.say(nick, 'Updated count for: ' + profile + "...")
         }
 
-        if (!nick['bottle']) {
-          profiles[profile]['bottle']['enable'] = true
-          client.say(nick, "Updating bottle flag for: " + profile + "...")
+        if (!('notify' in profiles[profile])) {
+          profiles[profile]['notify'] = false
+          client.say(nick, 'Updated notify for: ' + profile + "...")
         }
       }
 
@@ -314,17 +323,6 @@ const commands = {
         })
       }
     }
-  },
-  'whois': {
-    'name': 'whois',
-    'help': 'usage: ' + settings.prefix + 'whois [nick] -- get a WHOIS response.',
-    'admin': true,
-    'suffix': true,
-    'process': (client, nick, suffix) => {
-      client.whois(suffix, (info) => {
-        client.say(nick, info)
-      })
-    }
   }
 }
 
@@ -336,12 +334,15 @@ function addProfileInfo (client, nick, suffix, type, max) {
 
     if (!profiles[key]) {
       profiles[key] = {}
-
-      profiles[key]['notify'] = false
+      
+      profiles[key]['bottle'] = {
+        'enable': true
+      }
       profiles[key]['counter'] = {
         'enable': true,
         'count': 0
       }
+      profiles[key]['notify'] = false
     }
 
     profiles[key][type] = suffix

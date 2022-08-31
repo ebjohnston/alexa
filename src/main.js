@@ -10,6 +10,7 @@ const profiles = require(__dirname + '/profiles.json')
 const client = new irc.Client(settings.network, settings.username, settings.parameters)
 
 let duplicates = {}
+let nickCache = {}
 
 client.addListener('registered', () => {
   setInterval(() => {
@@ -110,7 +111,7 @@ client.addListener('error', (message) => {
 })
 
 client.addListener('names', (channel, nicks) => {
-  public.nickCache[channel] = nicks
+  nickCache[channel] = nicks
 })
 
 function processNick (channel, nick, notifyFlag) {
@@ -133,3 +134,5 @@ function addDuplicate (nick) {
 function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+exports.nickCache = nickCache

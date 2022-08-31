@@ -1,9 +1,8 @@
 // public message handler
 const greetings = require(__dirname + '/greetings.js')
+const main = require(__dirname + '/main.js')
 const profiles = require(__dirname + '/profiles.json')
 const settings = require(__dirname + '/settings.json')
-
-let nickCache = {}
 
 const commands = {
   'bottle': {
@@ -19,7 +18,7 @@ const commands = {
         }
       }
       console.debug("enabled profiles are: " + JSON.stringify(enabledProfiles))
-      const activeNicks = Object.keys(nickCache[channel])
+      const activeNicks = Object.keys(main.nickCache[channel])
       console.debug("active nicks are: " + JSON.stringify(activeNicks))
       const activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
       
@@ -100,7 +99,7 @@ const commands = {
           client.say(channel, "That die has too many sides!")
         } else {
           result = Math.ceil(Math.random() * sideCount)
-          client.say(channel, "You roll " + suffix + " and get... " + result + "!")
+          client.say(channel, nick + " rolls a " + suffix + " and gets... " + result + "!")
         }
       } else if (/^\d+[dD]\d+$/.test(suffix)) { // make sure it matches xdy syntax
         const diceCount = suffix.substring(0, suffix.search(/[dD]/))
@@ -120,7 +119,7 @@ const commands = {
             sum += newRoll
             rolls.push(newRoll)
           }
-          client.say(channel, "You roll " + suffix + " and get... " + sum + "! " + JSON.stringify(rolls))
+          client.say(channel, nick + " rolls " + suffix + " and gets... " + sum + "! " + JSON.stringify(rolls))
         }
       } else {
         client.say(channel, commands['roll']['help'])
@@ -145,4 +144,3 @@ const commands = {
 }
 
 exports.commands = commands
-exports.nickCache = nickCache

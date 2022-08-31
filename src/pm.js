@@ -2,6 +2,7 @@
 const fs = require('fs')
 
 const greetings = require(__dirname + '/greetings.js')
+const main = require(__dirname + '/main.js')
 
 const PROFILES_DIRECTORY = __dirname + '/profiles.json'
 const profiles = require(PROFILES_DIRECTORY)
@@ -26,8 +27,9 @@ const commands = {
   },
   'bottle': {
     'name': 'bottle',
-    'help': 'usage: ' + settings.prefix + 'counter [on | off | status] -- ' +
+    'help': 'usage: ' + settings.prefix + 'counter [on | off | status | list] -- ' +
                 'this determines whether your name is included in the pool for the channel command !bottle. ' +
+                'Status shows whether the flag is enabled, and list shows the current list of eligible nicks in all channels. ' +
                 'By default, this flag is enabled.',
     'admin': false,
     'suffix': true,
@@ -49,7 +51,19 @@ const commands = {
         } else {
           client.say(nick, 'The bottle flag for ' + nick + ' is currently disabled.')
         }
-      } else {
+      } else if (suffix == 'list') {
+        let enabledProfiles = []
+        for (const profile of Object.keys(profiles)) {
+          if ('bottle' in profiles[profile] && profiles[profile]['bottle']['enable']) {
+            enabledProfiles.push(profile)
+          }
+        }
+        for (let channel of settings.parameters.channels) {
+          const activeNicks = Object.keys(main.nickCache[channel])
+          const activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
+          client.say(nick, "The nicks available for !bottle in " + channel + " are: " + JSON.stringify(activeEnabledNicks))
+        }
+      }else {
         client.say(nick, 'parameter not recognized. ' + commands['counter'].help)
       }
       writeProfiles(nick)
@@ -245,9 +259,9 @@ const commands = {
     'admin': true,
     'suffix': false,
     'process': (client, nick, suffix) => {
-      for (var channel in settings.parameters.channels) {
+      for (let channel of settings.parameters.channels) {
         client.say(nick, 'Rejoining channels...')
-        client.join(settings.parameters.channels[channel])
+        client.join(channel)
       }
     }
   },

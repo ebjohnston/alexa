@@ -27,7 +27,7 @@ const commands = {
   },
   'bottle': {
     'name': 'bottle',
-    'help': 'usage: ' + settings.prefix + 'counter [on | off | status | list] -- ' +
+    'help': 'usage: ' + settings.prefix + 'bottle [on | off | status | list] -- ' +
                 'this determines whether your name is included in the pool for the channel command !bottle. ' +
                 'Status shows whether the flag is enabled, and list shows the current list of eligible nicks in all channels. ' +
                 'By default, this flag is enabled.',

@@ -30,7 +30,6 @@ const commands = {
         selectedNick = activeEnabledNicks[profileIndex]
 
         client.whois(selectedNick, (info) => {
-          console.log(JSON.stringify(info))
           isInactive = 'away' in info
         })
 
@@ -38,7 +37,6 @@ const commands = {
           await new Promise(r => setTimeout(r, 200))
         }
         if (isInactive) {
-          console.log('hit inactive!')
           activeEnabledNicks = activeEnabledNicks.filter(value => !(value === selectedNick))
         }
       } while ((selectedNick === nick && activeEnabledNicks.length > 1) || isInactive)

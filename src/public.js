@@ -10,24 +10,38 @@ const commands = {
     'help': 'usage: ' + settings.prefix + 'bottle -- selects a random user from the channel. Now kiss~',
     'admin': false,
     'suffix': false,
-    'process': (client, channel, nick, suffix) => {
+    'process': async (client, channel, nick, suffix) => {
       let enabledProfiles = []
       for (const profile of Object.keys(profiles)) {
         if ('bottle' in profiles[profile] && profiles[profile]['bottle']['enable']) {
           enabledProfiles.push(profile)
         }
       }
-      console.debug("enabled profiles are: " + JSON.stringify(enabledProfiles))
+      // console.debug("enabled profiles are: " + JSON.stringify(enabledProfiles))
       const activeNicks = Object.keys(main.nickCache[channel])
-      console.debug("active nicks are: " + JSON.stringify(activeNicks))
-      const activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
+      // console.debug("active nicks are: " + JSON.stringify(activeNicks))
+      let activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
       
-      console.debug("active enabled nicks are: " + JSON.stringify(activeEnabledNicks))
-      let selectedNick
+      // console.debug("active enabled nicks are: " + JSON.stringify(activeEnabledNicks))
+      let selectedNick, isInactive
       do {
+        isInactive = null
         let profileIndex = Math.floor(Math.random() * activeEnabledNicks.length)
         selectedNick = activeEnabledNicks[profileIndex]
-      } while (selectedNick === nick && activeEnabledNicks.length > 1)
+
+        client.whois(selectedNick, (info) => {
+          console.log(JSON.stringify(info))
+          isInactive = 'away' in info
+        })
+
+        while (isInactive === null) {
+          await new Promise(r => setTimeout(r, 200))
+        }
+        if (isInactive) {
+          console.log('hit inactive!')
+          activeEnabledNicks = activeEnabledNicks.filter(value => !(value === selectedNick))
+        }
+      } while ((selectedNick === nick && activeEnabledNicks.length > 1) || isInactive)
       
       client.say(channel, "Okay, " + nick + ", let's spin the bottle! Round and round and round it goes! And it lands on... " +
                         selectedNick + "!")

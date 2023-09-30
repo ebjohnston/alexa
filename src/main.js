@@ -17,7 +17,7 @@ client.addListener('registered', () => {
     let now = Date.now()
 
     for (let channel in duplicates) {
-      for (let nick in channel) {
+      for (let nick in duplicates[channel]) {
         let then = duplicates[channel][nick]['time']
         let hours = (now - then) / (60 * 60 * 1000)
 

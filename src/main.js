@@ -16,12 +16,14 @@ client.addListener('registered', () => {
   setInterval(() => {
     let now = Date.now()
 
-    for (let nick in duplicates) {
-      let then = duplicates[nick]['time']
-      let hours = (now - then) / (60 * 60 * 1000)
+    for (let channel in duplicates) {
+      for (let nick in channel) {
+        let then = duplicates[channel][nick]['time']
+        let hours = (now - then) / (60 * 60 * 1000)
 
-      if (hours >= settings.cooldown) {
-        delete duplicates[nick]
+        if (hours >= settings.cooldown) {
+          delete duplicates[channel][nick]
+        }
       }
     }
   }, 5 * 60 * 1000)
@@ -117,16 +119,19 @@ client.addListener('names', (channel, nicks) => {
 function processNick (channel, nick, notifyFlag) {
   let key = nick.toLowerCase() // ensure homogenous keys
 
-  if (!duplicates[key] && profiles[key]) {
+  if (!duplicates[channel]) {
+    duplicates[channel] = {}
+  }
+  if (!duplicates[channel][key] && profiles[key]) {
     greetings.introduce(client, channel, nick)
-    addDuplicate(key)
+    addDuplicate(channel, key)
   } else if (notifyFlag && !profiles[key]) {
     greetings.notify(client, nick)
   }
 }
 
-function addDuplicate (nick) {
-  duplicates[nick] = {
+function addDuplicate (channel, nick) {
+  duplicates[channel][nick] = {
     'time': Date.now()
   }
 }

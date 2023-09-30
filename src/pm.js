@@ -102,9 +102,9 @@ const commands = {
       writeProfiles(nick)
     }
   },
-  'del': {
-    'name': 'del',
-    'help': 'usage: ' + settings.prefix + 'del [description, image, link, all] -- ' +
+  'delete': {
+    'name': 'delete',
+    'help': 'usage: ' + settings.prefix + 'delete [description, image, link, all] -- ' +
                 'removes one or all of your profile elements from my database.',
     'admin': false,
     'suffix': true,
@@ -141,17 +141,27 @@ const commands = {
   },
   'echo': {
     'name': 'echo',
-    'help': 'usage: ' + settings.prefix + 'echo [text] -- echos text as the bot into all channels. ' +
-                'alternative usage: ' + settings.prefix + 'echo /me [text] -- echos text as an action instead.',
+    'help': 'usage: ' + settings.prefix + 'echo [channel] [text] -- echos text as the bot into all channels. ' +
+                'alternative usage: ' + settings.prefix + 'echo [channel] /me [text] -- echos text as an action instead.',
     'admin': true,
     'suffix': true,
     'process': (client, nick, suffix) => {
-      for (let channel in settings.parameters.channels) {
-        if (suffix.startsWith('/me ')) {
-          client.action(settings.parameters.channels[channel], suffix.substring(4))
+      let channel = suffix.split(' ')[0]
+      let message = suffix.substring(channel.length + 1)
+
+      if (!channel.startsWith('#')) {
+        channel = '#' + channel
+      }
+
+      if (settings.parameters.channels.includes(channel)) {
+        if (message.startsWith('/me ')) {
+          client.action(channel, message.substring(4))
         } else {
-          client.say(settings.parameters.channels[channel], suffix)
+          client.say(channel, message)
         }
+      }
+      else {
+        client.say(nick, "Sorry, I don't recognize the channel " + channel + ". Perhaps I'm not there?")
       }
     }
   },

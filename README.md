@@ -19,8 +19,7 @@ IRC greeting bot created in Node.js
 
 1. Start the bot by navigating to core directory and initializing core.js
     ```
-    cd src
-    node main.js
+    node src/main.js
     ```
 
 ## Settings Configuration

@@ -64,7 +64,7 @@ const commands = {
           client.say(nick, "The nicks available for !bottle in " + channel + " are: " + JSON.stringify(activeEnabledNicks))
         }
       }else {
-        client.say(nick, 'parameter not recognized. ' + commands['counter'].help)
+        client.say(nick, 'parameter not recognized. ' + commands['bottle'].help)
       }
       writeProfiles(nick)
     }
@@ -123,7 +123,7 @@ const commands = {
           client.say(nick, 'No remaining profile attributes. Your profile has been cleared and reset.')
         }
       } else {
-        client.say(nick, 'parameter not recognized. ' + commands['del'].help)
+        client.say(nick, 'parameter not recognized. ' + commands['delete'].help)
       }
 
       writeProfiles(nick)

@@ -1,11 +1,17 @@
 // private message handler
 import { writeFile } from 'fs'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 import { describe } from './greetings.js'
 import { nickCache } from './main.js'
 
 import settings from './settings.json' with { type: 'json' }
 import profiles from './profiles.json' with { type: 'json' }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const PROFILES_DIRECTORY = __dirname + '/profiles.json'
 
 const commands = {
   'backup': {

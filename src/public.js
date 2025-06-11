@@ -112,7 +112,7 @@ const commands = {
         if (sideCount > sideLimit) {
           client.say(channel, "That die has too many sides!")
         } else {
-          result = Math.ceil(Math.random() * sideCount)
+          const result = Math.ceil(Math.random() * sideCount)
           client.say(channel, nick + " rolls a " + suffix + " and gets... " + result + "!")
         }
       } else if (/^\d+[dD]\d+$/.test(suffix)) { // make sure it matches xdy syntax

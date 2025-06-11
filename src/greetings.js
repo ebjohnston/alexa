@@ -1,7 +1,7 @@
 // greeting message creator
 
-const settings = require('./settings.json')
-const profiles = require('./profiles.json')
+import settings from './settings.json' with { type: 'json' }
+import profiles from './profiles.json' with { type: 'json' }
 
 function introduce (client, channel, nick) {
   let intros = [
@@ -60,6 +60,4 @@ function notify (client, nick) {
                       "You won't see this message anymore if you have a description, as well.")
 }
 
-exports.introduce = introduce
-exports.describe = describe
-exports.notify = notify
+export { introduce, describe, notify }

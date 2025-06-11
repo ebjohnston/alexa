@@ -1,12 +1,11 @@
 // private message handler
-const fs = require('fs')
+import { writeFile } from 'fs'
 
-const greetings = require(__dirname + '/greetings.js')
-const main = require(__dirname + '/main.js')
+import { describe } from './greetings.js'
+import { nickCache } from './main.js'
 
-const PROFILES_DIRECTORY = __dirname + '/profiles.json'
-const profiles = require(PROFILES_DIRECTORY)
-const settings = require(__dirname + '/settings.json')
+import settings from './settings.json' with { type: 'json' }
+import profiles from './profiles.json' with { type: 'json' }
 
 const commands = {
   'backup': {
@@ -15,7 +14,7 @@ const commands = {
     'admin': true,
     'suffix': false,
     'process': (client, nick, suffix) => {
-      fs.writeFile(__dirname + '/profiles-backup.json', JSON.stringify(profiles), (err) => {
+      writeFile(__dirname + '/profiles-backup.json', JSON.stringify(profiles), (err) => {
         if (err) {
           console.log(err)
         } else {
@@ -59,7 +58,7 @@ const commands = {
           }
         }
         for (let channel of settings.parameters.channels) {
-          const activeNicks = Object.keys(main.nickCache[channel])
+          const activeNicks = Object.keys(nickCache[channel])
           const activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
           client.say(nick, "The nicks available for !bottle in " + channel + " are: " + JSON.stringify(activeEnabledNicks))
         }
@@ -328,7 +327,7 @@ const commands = {
       let key = suffix.toLowerCase().split(' ')[0]
 
       if (profiles[key]) {
-        client.say(nick, suffix + ' is:' + greetings.describe(key))
+        client.say(nick, suffix + ' is:' + describe(key))
 
         if (nick.toLowerCase() !== key) {
           if (profiles[key]['notify']) {
@@ -395,7 +394,7 @@ function addProfileInfo (client, nick, suffix, type, max) {
 }
 
 function writeProfiles (nick) {
-  fs.writeFile(PROFILES_DIRECTORY, JSON.stringify(profiles), (err) => {
+  writeFile(PROFILES_DIRECTORY, JSON.stringify(profiles), (err) => {
     if (err) {
       console.log(err)
     } else {
@@ -404,4 +403,4 @@ function writeProfiles (nick) {
   })
 }
 
-exports.commands = commands
+export { commands }

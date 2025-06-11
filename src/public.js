@@ -1,8 +1,10 @@
 // public message handler
-const greetings = require(__dirname + '/greetings.js')
-const main = require(__dirname + '/main.js')
-const profiles = require(__dirname + '/profiles.json')
-const settings = require(__dirname + '/settings.json')
+
+import { introduce } from './greetings.js'
+import { nickCache } from './main.js'
+
+import settings from './settings.json' with { type: 'json' }
+import profiles from './profiles.json' with { type: 'json' }
 
 const commands = {
   'bottle': {
@@ -18,7 +20,7 @@ const commands = {
         }
       }
       // console.debug("enabled profiles are: " + JSON.stringify(enabledProfiles))
-      const activeNicks = Object.keys(main.nickCache[channel])
+      const activeNicks = Object.keys(nickCache[channel])
       // console.debug("active nicks are: " + JSON.stringify(activeNicks))
       let activeEnabledNicks = activeNicks.filter(value => enabledProfiles.includes(value.toLowerCase()))
       
@@ -147,7 +149,7 @@ const commands = {
       key = suffix.toLowerCase()
 
       if (profiles[key]) {
-        greetings.introduce(client, channel, suffix)
+        introduce(client, channel, suffix)
       } else {
         client.say(channel, "Sorry, I don't recognize the name " + suffix + '.')
       }
@@ -155,4 +157,4 @@ const commands = {
   }
 }
 
-exports.commands = commands
+export { commands }

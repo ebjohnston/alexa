@@ -1,13 +1,13 @@
-const irc = require('irc')
+import { Client } from 'irc'
 
-const greetings = require(__dirname + '/greetings.js')
-const pm = require(__dirname + '/pm.js')
-const public = require(__dirname + '/public.js')
+import { introduce, notify } from './greetings.js'
+import { commands as pmCommands } from './pm.js'
+import { commands as channelCommands } from './public.js'
 
-const settings = require(__dirname + '/settings.json')
-const profiles = require(__dirname + '/profiles.json')
+import settings from './settings.json' with { type: 'json' }
+import profiles from './profiles.json' with { type: 'json' }
 
-const client = new irc.Client(settings.network, settings.username, settings.parameters)
+const client = new Client(settings.network, settings.username, settings.parameters)
 
 let duplicates = {}
 let nickCache = {}
@@ -37,14 +37,14 @@ client.addListener('pm', (nick, text, message) => {
     let command = text.substring(settings.prefix.length).split(' ')[0]
     let suffix = text.substring(settings.prefix.length + command.length + 1)
 
-    if (pm.commands[command]) {
-      if (pm.commands[command]['admin'] && !settings.admins.includes(nick)) {
+    if (pmCommands[command]) {
+      if (pmCommands[command]['admin'] && !settings.admins.includes(nick)) {
         client.say(nick, 'You do not have permission to use that command.')
-      } else if (pm.commands[command]['suffix'] && /^\s*$/.test(suffix)) {
+      } else if (pmCommands[command]['suffix'] && /^\s*$/.test(suffix)) {
         // check if suffix is required and not provided
-        client.say(nick, pm.commands[command]['help'])
+        client.say(nick, pmCommands[command]['help'])
       } else {
-        pm.commands[command].process(client, nick, suffix)
+        pmCommands[command].process(client, nick, suffix)
       }
     } else {
       client.say(nick, "I don't recognize this command. Type " + settings.prefix + 'help for more information.')
@@ -58,14 +58,14 @@ client.addListener('message#', (nick, channel, text, message) => {
     let command = text.substring(settings.prefix.length).split(' ')[0]
     let suffix = text.substring(settings.prefix.length + command.length + 1)
 
-    if (public.commands[command]) {
-      if (public.commands[command]['admin'] && !settings.admins.includes(nick)) {
+    if (channelCommands[command]) {
+      if (channelCommands[command]['admin'] && !settings.admins.includes(nick)) {
         client.say(nick, 'You do not have permission to use ' + settings.prefix + channel + 'in public channels.')
-      } else if (public.commands[command]['suffix'] && /^\s*$/.test(suffix)) {
+      } else if (channelCommands[command]['suffix'] && /^\s*$/.test(suffix)) {
         // check if suffix is required and not provided
-        client.say(nick, public.commands[command]['help'])
+        client.say(nick, channelCommands[command]['help'])
       } else {
-        public.commands[command].process(client, channel, nick, suffix)
+        channelCommands[command].process(client, channel, nick, suffix)
       }
     } else {
       client.say(nick, "I don't recognize " + settings.prefix + command + ". Type " + settings.prefix + 'help in the channel for more information.')
@@ -79,7 +79,7 @@ client.addListener('message#', (nick, channel, text, message) => {
     let key = query.toLowerCase()
 
     if (profiles[key]) {
-      greetings.introduce(client, channel, query)
+      introduce(client, channel, query)
     } else {
       client.say(channel, "Sorry, I don't recognize the name " + query + '.')
     }
@@ -116,17 +116,17 @@ client.addListener('names', (channel, nicks) => {
   nickCache[channel] = nicks
 })
 
-function processNick (channel, nick, notifyFlag) {
+function processNick (channel, nick, isNotifyEnabled) {
   let key = nick.toLowerCase() // ensure homogenous keys
 
   if (!duplicates[channel]) {
     duplicates[channel] = {}
   }
   if (!duplicates[channel][key] && profiles[key]) {
-    greetings.introduce(client, channel, nick)
+    introduce(client, channel, nick)
     addDuplicate(channel, key)
-  } else if (notifyFlag && !profiles[key]) {
-    greetings.notify(client, nick)
+  } else if (isNotifyEnabled && !profiles[key]) {
+    notify(client, nick)
   }
 }
 
@@ -140,4 +140,4 @@ function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-exports.nickCache = nickCache
+export { nickCache }

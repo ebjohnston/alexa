@@ -4,6 +4,7 @@
   "description": "IRC greeting bot",
   "main": "src/main.js",
   "readme": "README.md",
+  "type": "module",
   "dependencies": {
     "irc": "^0.5.2"
   },

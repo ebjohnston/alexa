@@ -31,6 +31,7 @@ client.addListener('registered', () => {
 
 // pm command parser
 client.addListener('pm', (nick, text, message) => {
+  console.log(`User ${nick} has sent PM: ${text}`)
   if (!text.startsWith(settings.prefix)) {
     client.say(nick, "I don't recognize this syntax. Type " + settings.prefix + 'help for more information.')
   } else {
@@ -54,6 +55,7 @@ client.addListener('pm', (nick, text, message) => {
 
 
 client.addListener('message#', (nick, channel, text, message) => {
+    console.log(`User ${nick} has sent channel ${channel} message: ${text}`)
   if (text.startsWith(settings.prefix)) {
     let command = text.substring(settings.prefix.length).split(' ')[0]
     let suffix = text.substring(settings.prefix.length + command.length + 1)

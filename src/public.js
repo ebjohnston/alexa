@@ -129,7 +129,7 @@ const commands = {
           let sum = 0
           let rolls = []
           for (let index = 0; index < diceCount; index++) {
-            newRoll = Math.ceil(Math.random() * sideCount)
+            const newRoll = Math.ceil(Math.random() * sideCount)
             sum += newRoll
             rolls.push(newRoll)
           }

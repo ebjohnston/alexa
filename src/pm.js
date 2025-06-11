@@ -111,7 +111,9 @@ const commands = {
     'process': (client, nick, suffix) => {
       let key = nick.toLowerCase()
 
-      if (suffix === 'all') {
+      if (!profiles[key]) {
+        client.say(nick, 'This nick does not have a profile configured.')
+      } else if (suffix === 'all') {
         delete profiles[key]
         client.say(nick, 'your profile has been successfully cleared.')
       } else if (suffix === 'description' || suffix === 'image' || suffix === 'link') {

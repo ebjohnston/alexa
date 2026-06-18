@@ -59,7 +59,7 @@ client.addListener('pm', (nick, text, message) => {
 client.addListener('message#', (nick, channel, text, message) => {
   if (text.startsWith(settings.prefix)) {
     console.log(`User ${nick} has sent channel ${channel} message: ${text}`)
-    
+
     let command = text.substring(settings.prefix.length).split(' ')[0]
     let suffix = text.substring(settings.prefix.length + command.length + 1)
 
@@ -78,8 +78,8 @@ client.addListener('message#', (nick, channel, text, message) => {
   }
 
   if (text.startsWith(settings.username + ', who is ') &&
-        text.charAt(text.length - 1) === '?' &&
-        settings.admins.includes(nick)) {
+    text.charAt(text.length - 1) === '?' &&
+    settings.admins.includes(nick)) {
     let query = text.substring(settings.username.length + 9, text.length - 1)
     let key = query.toLowerCase()
 
@@ -121,28 +121,31 @@ client.addListener('names', (channel, nicks) => {
   nickCache[channel] = nicks
 })
 
-function processNick (channel, nick, isNotifyEnabled) {
+function processNick(channel, nick, isNotifyEnabled) {
   let key = nick.toLowerCase() // ensure homogenous keys
-  let whoIs = client.whois(nick)
 
-  if (!duplicates[channel]) {
-    duplicates[channel] = {}
-  }
-  if (whoIs.channels.includes(channel) && !duplicates[channel][key] && profiles[key]) {
-    introduce(client, channel, nick)
-    addDuplicate(channel, key)
-  } else if (isNotifyEnabled && !profiles[key]) {
-    notify(client, nick)
-  }
+  client.whois(nick, (info) => {
+    if (info.channels.includes(channel)) { // not a shadow announce
+      if (!duplicates[channel]) {
+        duplicates[channel] = {}
+      }
+      if (whoIs.channels.includes(channel) && !duplicates[channel][key] && profiles[key]) {
+        introduce(client, channel, nick)
+        addDuplicate(channel, key)
+      } else if (isNotifyEnabled && !profiles[key]) {
+        notify(client, nick)
+      }
+    }
+  })
 }
 
-function addDuplicate (channel, nick) {
+function addDuplicate(channel, nick) {
   duplicates[channel][nick] = {
     'time': Date.now()
   }
 }
 
-function sleep (ms) {
+function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 

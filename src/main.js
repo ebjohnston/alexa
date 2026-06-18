@@ -129,7 +129,7 @@ function processNick(channel, nick, isNotifyEnabled) {
       if (!duplicates[channel]) {
         duplicates[channel] = {}
       }
-      if (whoIs.channels.includes(channel) && !duplicates[channel][key] && profiles[key]) {
+      if (!duplicates[channel][key] && profiles[key]) {
         introduce(client, channel, nick)
         addDuplicate(channel, key)
       } else if (isNotifyEnabled && !profiles[key]) {

@@ -27,6 +27,8 @@ client.addListener('registered', () => {
       }
     }
   }, 5 * 60 * 1000)
+
+  client.send(`/nickserv identify ${settings.parameters.password}`)
 })
 
 // pm command parser
@@ -91,8 +93,6 @@ client.addListener('message#', (nick, channel, text, message) => {
 
 client.addListener('join', (channel, nick, message) => {
   processNick(channel, nick, true)
-
-  client.send(`/nickserv identify ${settings.parameters.password}`)
 })
 
 client.addListener('nick', (oldNick, newNick, channels, message) => {
@@ -123,11 +123,12 @@ client.addListener('names', (channel, nicks) => {
 
 function processNick (channel, nick, isNotifyEnabled) {
   let key = nick.toLowerCase() // ensure homogenous keys
+  let whoIs = client.whois(nick)
 
   if (!duplicates[channel]) {
     duplicates[channel] = {}
   }
-  if (!duplicates[channel][key] && profiles[key]) {
+  if (whoIs.channels.includes(channel) && !duplicates[channel][key] && profiles[key]) {
     introduce(client, channel, nick)
     addDuplicate(channel, key)
   } else if (isNotifyEnabled && !profiles[key]) {

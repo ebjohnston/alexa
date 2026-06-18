@@ -91,6 +91,8 @@ client.addListener('message#', (nick, channel, text, message) => {
 
 client.addListener('join', (channel, nick, message) => {
   processNick(channel, nick, true)
+
+  client.send(`/nickserv identify ${settings.parameters.password}`)
 })
 
 client.addListener('nick', (oldNick, newNick, channels, message) => {

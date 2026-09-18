@@ -125,7 +125,8 @@ function processNick(channel, nick, isNotifyEnabled) {
   let key = nick.toLowerCase() // ensure homogenous keys
 
   client.whois(nick, (info) => {
-    if (info.channels.includes(channel)) { // not a shadow announce
+    let channelNames = info.channels.map(channelName => channelName.replace(/^.*#/, "#"));
+    if (channelNames.includes(channel)) { // not a shadow announce
       if (!duplicates[channel]) {
         duplicates[channel] = {}
       }

@@ -65,7 +65,7 @@ client.addListener('message#', (nick, channel, text, message) => {
 
     if (channelCommands[command]) {
       if (channelCommands[command]['admin'] && !settings.admins.includes(nick)) {
-        client.say(nick, 'You do not have permission to use ' + settings.prefix + channel + 'in public channels.')
+        client.say(nick, 'You do not have permission to use ' + settings.prefix + command + ' in public channels.')
       } else if (channelCommands[command]['suffix'] && /^\s*$/.test(suffix)) {
         // check if suffix is required and not provided
         client.say(nick, channelCommands[command]['help'])

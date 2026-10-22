@@ -333,7 +333,7 @@ const commands = {
       let key = suffix.toLowerCase().split(' ')[0]
 
       if (profiles[key]) {
-        client.say(nick, suffix + ' is:' + describe(key))
+        client.say(nick, key + ' is:' + describe(key))
 
         if (nick.toLowerCase() !== key) {
           if (profiles[key]['notify']) {
